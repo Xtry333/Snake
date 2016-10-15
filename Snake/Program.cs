@@ -9,9 +9,6 @@ namespace Snake
 {
     class Program
     {
-        //static int maxX = Console.WindowWidth/2-1;
-        //static int maxY = Console.WindowHeight-1;
-
         static int boardMinX = 1;
         static int boardMinY = 1;
         static int boardMaxX = 28;
@@ -158,7 +155,7 @@ namespace Snake
                             snakeOldX[i] = 0;
                             snakeOldY[i] = 0;
                         }
-
+                        
                         snakeAlive = true;
                         snakeLength = 1;
                         fBoardClear();
