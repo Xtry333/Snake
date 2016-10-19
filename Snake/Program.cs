@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Diagnostics;
 using System.Linq;
 using System.Text;
 using System.Threading;
@@ -86,6 +87,31 @@ namespace Snake
                 return true;
             }
             else return false;
+            /*try
+            {
+                if (!(x >= 0 && x <= Console.WindowWidth && y >= 0 && y <= Console.WindowHeight))
+                    throw new ArgumentOutOfRangeException("x, y OoR o Console.Dims");
+                if (addToBoard)
+                {
+                    if (x >= boardMinX && x <= boardMaxX && y >= boardMinY && y <= boardMaxY)
+                    {
+                        Console.SetCursorPosition(2 * x, y);
+                        Console.Write(str + str);
+                        boardTiles[x, y] = str;
+                    }
+                }
+                else
+                {
+                    Console.SetCursorPosition(x, y);
+                    Console.Write(str);
+                }
+                return true;
+            }
+            catch (Exception ex)
+            {
+                Console.Write(ex);
+                return false;
+            }*/
         }
 
         static bool isTile(int x, int y, string str)
@@ -103,9 +129,14 @@ namespace Snake
             Console.TreatControlCAsInput = true;
             Console.CursorVisible = false;
             Console.Title = "Snake";
-
+            //int time0 = DateTime.Ticks;
             fBoardClear();
             drawFrame();
+
+            Stopwatch stopWatch = new Stopwatch();
+            long swTicks = 0;
+            long swMs = 0;
+            TimeSpan ts = stopWatch.Elapsed;
 
             int fruitX = rnd.Next(boardMinX, boardMaxX);
             int fruitY = rnd.Next(boardMinY, boardMaxY);
@@ -138,6 +169,7 @@ namespace Snake
 
             while (!quit)
             {
+                stopWatch.Start();
                 if (Console.KeyAvailable)
                 {
                     ConsoleKeyInfo keyInfo = Console.ReadKey(true);
@@ -249,17 +281,23 @@ namespace Snake
                         snakeOldY[i] = snakeY[i - 1];
                     }
                 }
-                /*for (int i = 0; i <= snakeLength; i++)
+                for (int i = 0; i <= snakeLength; i++)
                 {
                     if (i != snakeLength) { writeAt(snakeX[i], snakeY[i], tileFull, true); }
                     if (i == snakeLength) { writeAt(snakeX[i], snakeY[i], tileEmpty, true); }
-                }*/
+                }
                 writeAt(snakeX[0], snakeY[0], tileFull, true);
                 writeAt(snakeX[snakeLength], snakeY[snakeLength], tileEmpty, true);
 
                 writeAt(2 * fruitX, fruitY, tileHalf + tileHalf);
                 writeAt(2 * boardMaxX + 8, 2, "Length: " + snakeLength);
+                if (swTicks != 0)
+                writeAt(2 * boardMaxX + 8, 17, "Ticks: " + swTicks + "        ");
+                writeAt(2 * boardMaxX + 8, 18, "Ms: " + swMs + "   ");
 
+                swTicks = stopWatch.ElapsedTicks;
+                swMs = stopWatch.ElapsedMilliseconds;
+                stopWatch.Reset();
                 Thread.Sleep(frameDelay);
             }
             writeAt(2 * boardMaxX + 8, 0, "Exiting...");
