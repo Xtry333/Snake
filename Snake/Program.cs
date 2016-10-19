@@ -129,25 +129,22 @@ namespace Snake
             Console.TreatControlCAsInput = true;
             Console.CursorVisible = false;
             Console.Title = "Snake";
-            //int time0 = DateTime.Ticks;
+
             fBoardClear();
             drawFrame();
 
             Stopwatch stopWatch = new Stopwatch();
             long swTicks = 0;
             long swMs = 0;
-            TimeSpan ts = stopWatch.Elapsed;
+
+            int frameDelay = 66;
 
             int fruitX = rnd.Next(boardMinX, boardMaxX);
             int fruitY = rnd.Next(boardMinY, boardMaxY);
 
             bool genExit = false;
             int genTries = 0;
-
-            int frameDelay = 66;
-
-            //writeAt(2 * fruitX, fruitY, tileHalf + tileHalf);
-
+            
             bool snakeAlive = true;
 
             int snakeLength = 1;
@@ -246,7 +243,7 @@ namespace Snake
                         {
                             for (int j = 0; j <= boardMaxY; j++)
                             {
-                                if (boardTiles[i, j] != tileFull && i > boardMinX && j > boardMinY)
+                                if (!isTile(i, j, tileFull) && i > boardMinX && j > boardMinY)
                                 {
                                     genExit = true;
                                     fruitX = i;
@@ -281,22 +278,23 @@ namespace Snake
                         snakeOldY[i] = snakeY[i - 1];
                     }
                 }
-                for (int i = 0; i <= snakeLength; i++)
+                /*for (int i = 0; i <= snakeLength; i++)
                 {
                     if (i != snakeLength) { writeAt(snakeX[i], snakeY[i], tileFull, true); }
                     if (i == snakeLength) { writeAt(snakeX[i], snakeY[i], tileEmpty, true); }
-                }
+                }*/
+
                 writeAt(snakeX[0], snakeY[0], tileFull, true);
                 writeAt(snakeX[snakeLength], snakeY[snakeLength], tileEmpty, true);
 
                 writeAt(2 * fruitX, fruitY, tileHalf + tileHalf);
                 writeAt(2 * boardMaxX + 8, 2, "Length: " + snakeLength);
-                if (swTicks != 0)
-                writeAt(2 * boardMaxX + 8, 17, "Ticks: " + swTicks + "        ");
-                writeAt(2 * boardMaxX + 8, 18, "Ms: " + swMs + "   ");
 
                 swTicks = stopWatch.ElapsedTicks;
                 swMs = stopWatch.ElapsedMilliseconds;
+                writeAt(2 * boardMaxX + 8, 20, "Ticks: " + swTicks + "        ");
+                writeAt(2 * boardMaxX + 8, 21, "Ms: " + swMs + "   ");
+
                 stopWatch.Reset();
                 Thread.Sleep(frameDelay);
             }
